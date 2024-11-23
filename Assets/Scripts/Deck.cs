@@ -5,18 +5,13 @@ public class Deck : MonoBehaviour
 {
     [SerializeField] private List<CardData> cards;
 
-    public void InitializeDeck(List<CardData> initialCards)
-    {
-        cards = new List<CardData>(initialCards);
-    }
-
     public List<CardData> DrawCards(int count)
     {
         List<CardData> drawnCards = new List<CardData>();
 
-        for (int i = 0; i < count && cards.Count > 0; i++)
+        for (int i = 0; i < count && cards.Count >= count; i++)
         {
-            int randomIndex = Random.Range(0, cards.Count);
+            int randomIndex = Random.Range(0, cards.Count - 1);
             drawnCards.Add(cards[randomIndex]);
             cards.RemoveAt(randomIndex);
         }
