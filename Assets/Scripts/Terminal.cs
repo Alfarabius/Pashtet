@@ -26,9 +26,12 @@ public class Terminal : MonoBehaviour
 
     private void OnGUI()
     {
-        if (!interpreter.isComputerOn)
+        if (!interpreter.isComputerOn || inputField.text == "" && interpreter.IsEnterPressed)
+        {
+            interpreter.ReleaseEnter();
             return;
-        
+        }
+       
         if (inputField.text != "" && interpreter.IsEnterPressed)
         {
             interpreter.ReleaseEnter();
