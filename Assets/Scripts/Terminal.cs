@@ -48,7 +48,7 @@ public class Terminal : MonoBehaviour
     {
         if (lineCount > 4)
         {
-            scrollRect.velocity = new Vector2(0, 450f);
+            scrollRect.velocity = new Vector2(0, 1050f);
         }
         else
         {
@@ -82,7 +82,7 @@ public class Terminal : MonoBehaviour
         return outputLines.Count;
     }
 
-    private void ClearInputField()
+    public void ClearInputField()
     {
         inputField.text = string.Empty;
     }

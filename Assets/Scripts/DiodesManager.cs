@@ -25,4 +25,17 @@ public class DiodesManager : MonoBehaviour
 
         _spriteRenderers[index].sprite = sprite;
     }
+
+    public void ToggleXDiodes(int amount, bool state)
+    {
+        if (amount == 0)
+            amount = 1;
+        else if (amount >= _spriteRenderers.Count)
+            amount = _spriteRenderers.Count;
+        
+        for (int i = 0; i < amount; i++)
+        {
+            ToggleDiode(i, state);
+        }
+    }
 }
