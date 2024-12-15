@@ -414,7 +414,19 @@ MonoBehaviour:
   m_TargetGraphic: {fileID: 234772954}
   m_OnClick:
     m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 1199294344}
+        m_TargetAssemblyTypeName: Localization, Assembly-CSharp
+        m_MethodName: ToggleLanguage
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!114 &234772954
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2138,7 +2150,7 @@ Transform:
   m_GameObject: {fileID: 1035908702}
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 0.02, y: -14.36, z: 0}
+  m_LocalPosition: {x: 0.02, y: -14, z: 0}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -2205,6 +2217,10 @@ MonoBehaviour:
   audioClip: {fileID: 8300000, guid: 2d36c9972ecbdf949abd528188dc6f28, type: 3}
   liftDistance: 11.2
   liftDuration: 1
+  ruSprite: {fileID: 21300000, guid: d73f91b68474a334a9613f4ca77e4dc4, type: 3}
+  enSprite: {fileID: 21300000, guid: 253e6eea676b963458918c58a3b9d32a, type: 3}
+  finalSprite: {fileID: 21300000, guid: 93872dd167d4eb84b940865337dbc578, type: 3}
+  target: {fileID: 1299133092}
 --- !u!1 &1089110940
 GameObject:
   m_ObjectHideFlags: 0
@@ -2971,6 +2987,7 @@ GameObject:
   m_Component:
   - component: {fileID: 1199294342}
   - component: {fileID: 1199294341}
+  - component: {fileID: 1199294344}
   - component: {fileID: 1199294343}
   m_Layer: 0
   m_Name: '[Turbo100]'
@@ -3070,6 +3087,49 @@ MonoBehaviour:
   onSwitch: {fileID: 626564693}
   isComputerOn: 0
   spriteRenderer: {fileID: 944624613}
+  gameEnded:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1035908706}
+        m_TargetAssemblyTypeName: Paper, Assembly-CSharp
+        m_MethodName: OnGameEnd
+        m_Mode: 1
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
+--- !u!114 &1199294344
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1199294340}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5aa386157214b064ca5cd5d3fd2a632f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  <Language>k__BackingField: 0
+  languageChanged:
+    m_PersistentCalls:
+      m_Calls:
+      - m_Target: {fileID: 1035908706}
+        m_TargetAssemblyTypeName: Paper, Assembly-CSharp
+        m_MethodName: OnLanguageChanged
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
 --- !u!1 &1211575167
 GameObject:
   m_ObjectHideFlags: 0
@@ -3220,6 +3280,37 @@ Transform:
   - {fileID: 346945986}
   - {fileID: 1672017773}
   - {fileID: 1719590114}
+  m_Father: {fileID: 0}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!1 &1299133091
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1299133092}
+  m_Layer: 0
+  m_Name: Paper Point
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1299133092
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1299133091}
+  serializedVersion: 2
+  m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
+  m_LocalPosition: {x: 0.02, y: -3.2700005, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1317603707
@@ -6762,5 +6853,6 @@ SceneRoots:
   - {fileID: 1499526438}
   - {fileID: 1199294342}
   - {fileID: 1262972930}
+  - {fileID: 1299133092}
   - {fileID: 1035908704}
   - {fileID: 944624614}

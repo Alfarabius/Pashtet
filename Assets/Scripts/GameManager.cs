@@ -4,11 +4,14 @@ using DG.Tweening;
 using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
+using UnityEngine.Events;
+using UnityEngine.Serialization;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
 {
     [SerializeField] private AudioMixer audioMixer;
+    private Localization _localization;
     
     [Header("Cursor")]
     [SerializeField] private Sprite cursorSprite;
@@ -30,7 +33,9 @@ public class GameManager : MonoBehaviour
     private int _currentStage = 0;
     
     [SerializeField] private SpriteRenderer spriteRenderer;
-
+    
+    public UnityEvent gameEnded;
+    
     [ContextMenu("Quit")]
     private void FadeOutAndQuit()
     {
@@ -51,6 +56,7 @@ public class GameManager : MonoBehaviour
     
     private void Awake()
     {
+        _localization = GetComponent<Localization>();
         Cursor.SetCursor(null,Vector2.zero,CursorMode.Auto);
         Cursor.visible = false;
         CreateCursorObject();
@@ -87,18 +93,44 @@ public class GameManager : MonoBehaviour
 
         if (_currentStage == 0)
         {
-            output.Add("If you need help enter: cat hint.txt");
-            output.Add("Let's start with something simple, type capirotada");
+            if (_localization.Language == Localization.Languages.English)
+            {
+                output.Add("If you need help enter: cat hint.txt");
+                output.Add("Let's start with something simple, type: capirotada");
+            }
+            else if (_localization.Language == Localization.Languages.Russian)
+            {
+                output.Add("Если нужна помощь, введи: cat hint.txt");
+                output.Add("Давай начнем с чего-нибудь простого, введи: capirotada");
+            }
+
             _currentStage = 1;
             return output;
         }
-        
+
         if (input == "cat")
-            output.Add("Meow");
+        {
+            if (_localization.Language == Localization.Languages.English)
+            {
+                output.Add("Meow");
+            }
+            else if (_localization.Language == Localization.Languages.Russian)
+            {
+                output.Add("Мяу");
+                
+            }
+        }
 
         if (input == "cat daruda_sandstorm.mp3")
         {
-            output.Add("cat can read only text files");
+            if (_localization.Language == Localization.Languages.English)
+            {
+                output.Add("cat can read only text files");
+            }
+            else if (_localization.Language == Localization.Languages.Russian)
+            {
+                output.Add("cat может читать только текстовые файлы");
+            }
         }
 
         if (input == "files list")
@@ -178,13 +210,27 @@ public class GameManager : MonoBehaviour
                 return output;
             
             _currentStage = 4;
-            output.Add("Hello, if you are reading these, it means it's time to say goodbye.");
-            output.Add("And as a final surprise for you and your sister, about 15 years ago");
-            output.Add("I bought some of those now-famous Golden Plus coins.");
-            output.Add("Here is my wallet: 90df#sgFFkKeM=dSL+%icxGH*GV#.");
-            output.Add("The keywords are in my notebook in the closet.");
-            output.Add("There isn't much in the wallet, but I think it should be enough ");
-            output.Add("for a cozy home for you and your sister. With love, Dad =)");
+            StartCoroutine(FinalPaper());
+            if (_localization.Language == Localization.Languages.English)
+            {
+                output.Add("Hi, if you are reading these, it means it's time to say goodbye.");
+                output.Add("And as a final surprise for you and your sister, about 15 years ago");
+                output.Add("I bought some of those now-famous Golden Plus coins.");
+                output.Add("Here is my wallet: 90df#sgFFkKeM=dSL+%icxGH*GV#.");
+                output.Add("The keywords are in my notebook in the closet.");
+                output.Add("There isn't much in the wallet, but I think it should be enough ");
+                output.Add("for a cozy home for you and your sister. With love, Dad =)");
+            }
+            else if (_localization.Language == Localization.Languages.Russian)
+            {
+                output.Add("Привет, если ты это читаешь, значит, пришло время прощаться.");
+                output.Add("И в качестве последнего сюрприза для тебя и твоей сестры, около 15 лет назад");
+                output.Add("Я купил несколько ныне знаменитых монет Golden Plus.");
+                output.Add("Вот мой кошелек: 90df#sgFFkKeM=dSL+%icxGH*GV#.");
+                output.Add("Ключевые слова находятся в моем блокноте в шкафу.");
+                output.Add("В кошельке не так много денег, но я думаю, что должно хватить");
+                output.Add("на уютный дом для тебя и твоей сестры. С любовью, Папа =)");
+            }
         }
         
         return output;
@@ -269,6 +315,12 @@ public class GameManager : MonoBehaviour
         inputField.text += output;
     }
 
+    private IEnumerator FinalPaper()
+    {
+        yield return new WaitForSeconds(10f);
+        gameEnded.Invoke();
+    }
+
     private IEnumerator ToggleOnButton(bool isOn)
     {
         yield return new WaitForSeconds(0.2f);
@@ -314,39 +366,42 @@ public class GameManager : MonoBehaviour
 
         if (_currentStage == 0)
         {
-            output.Add("File is not available");
+            if (_localization.Language == Localization.Languages.English)
+                output.Add("hint.txt is not available");
+            else if (_localization.Language == Localization.Languages.Russian)
+                output.Add("hint.txt недоступен");
         }
 
-        if (_currentStage == 1)
+        if (_currentStage > 0)
         {
-            output.Add("Make the right word from others, erase unnecessary letters with Back Space");
-            output.Add("\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593");
-            output.Add("\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593");
-            output.Add("\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593");
+            if (_localization.Language == Localization.Languages.English)
+                output.Add("Make the right word from others, erase unnecessary letters with Back Space");
+            else if (_localization.Language == Localization.Languages.Russian)
+                output.Add("Составь нужное слово из других, сотри ненужные буквы с помощью Back Space");
         }
 
-        if (_currentStage == 2)
+        if (_currentStage > 1)
         {
-            output.Add("Make the right word from others, erase unnecessary letters with Back Space");
-            output.Add("Password is 3 ASCII symbols, use cat ascii.txt");
-            output.Add("\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593");
-            output.Add("\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593");
+            if (_localization.Language == Localization.Languages.English)
+                output.Add("Password is 3 ASCII symbols, use cat ascii.txt");
+            else if (_localization.Language == Localization.Languages.Russian)
+                output.Add("Пароль состоит из 3 символов ASCII, используйте cat ascii.txt");
         }
 
-        if (_currentStage == 3)
+        if (_currentStage > 2)
         {
-            output.Add("Make the right word from others, erase unnecessary letters with Back Space");
-            output.Add("Password is 3 ASCII symbols, use cat ascii.txt");
-            output.Add("golden_plus.txt now available");
-            output.Add("\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593\u2593");
+            if (_localization.Language == Localization.Languages.English)
+                output.Add("golden_plus.txt now available");
+            else if (_localization.Language == Localization.Languages.Russian)
+                output.Add("golden_plus.txt теперь доступен");
         }
 
-        if (_currentStage == 4)
+        if (_currentStage > 3)
         {
-            output.Add("Make the right word from others, erase unnecessary letters with Back Space");
-            output.Add("Password is 3 ASCII symbols, use cat ascii.txt");
-            output.Add("golden_plus.txt now available");
-            output.Add("You can turn off PDA now. Thank you for playing!");
+            if (_localization.Language == Localization.Languages.English)
+                output.Add("You can turn off PDA now. Thank you for playing!");
+            else if (_localization.Language == Localization.Languages.Russian)
+                output.Add("Можешь выключить КПК. Спасибо за игру!");
         }
         
         return output;
