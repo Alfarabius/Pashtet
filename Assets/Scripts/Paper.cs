@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using DG.Tweening;
 
@@ -5,7 +6,6 @@ public class Paper : MonoBehaviour
 {
     [SerializeField] private AudioSource audioSource;
     [SerializeField] private AudioClip audioClip;
-    [SerializeField] private float liftDistance;
     [SerializeField] private float liftDuration = 0.5f;
     
     [SerializeField] private Sprite ruSprite;
@@ -17,11 +17,14 @@ public class Paper : MonoBehaviour
     [SerializeField] private Transform target;
     
     private SpriteRenderer _spriteRenderer;
+    
+    private bool isSpoted = false;
 
     private void Awake()
     {
         _originalPosition = transform.position;
         _spriteRenderer = GetComponent<SpriteRenderer>();
+        StartCoroutine(Shake());
     }
 
     public void OnLanguageChanged(Localization.Languages language)
@@ -63,6 +66,7 @@ public class Paper : MonoBehaviour
 
     private void LiftPaper()
     {
+        isSpoted = true;
         _isLifted = true;
         transform.DOMove(target.position , liftDuration).OnComplete(() =>
         {
@@ -76,5 +80,14 @@ public class Paper : MonoBehaviour
         {
             _isLifted = false;
         });
+    }
+
+    private IEnumerator Shake()
+    {
+        yield return new WaitForSeconds(20f);
+        if (!isSpoted)
+        {
+            transform.DOShakePosition(3f, 0.8f, 10, 10, false, true);
+        }
     }
 }

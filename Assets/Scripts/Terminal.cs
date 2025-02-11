@@ -56,6 +56,11 @@ public class Terminal : MonoBehaviour
         }
     }
 
+    public void Scroll(float value)
+    {
+        scrollRect.velocity = new Vector2(0, value);
+    }
+
     private void AddStartLine(string userInputText)
     {
        var terminalContentSize = _terminalContentRect.sizeDelta;

@@ -5,7 +5,8 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.Audio;
 using UnityEngine.Events;
-using UnityEngine.Serialization;
+using UnityEngine.Rendering;
+using UnityEngine.Rendering.Universal;
 using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour
@@ -13,9 +14,11 @@ public class GameManager : MonoBehaviour
     [SerializeField] private AudioMixer audioMixer;
     private Localization _localization;
     
-    [Header("Cursor")]
-    [SerializeField] private Sprite cursorSprite;
-    private GameObject _cursorObject;
+    [SerializeField] Volume postProcessVolume;
+    private Vignette _vignette;
+    
+    //[SerializeField] private Sprite cursorSprite;
+    //private GameObject _cursorObject;
     
     private SoundPlayer _soundPlayer;
     private DiodesManager _diodesManager;
@@ -33,7 +36,8 @@ public class GameManager : MonoBehaviour
     private int _currentStage = 0;
     
     [SerializeField] private SpriteRenderer spriteRenderer;
-    
+
+    public UnityEvent onButtonsFind;
     public UnityEvent gameEnded;
     
     [ContextMenu("Quit")]
@@ -56,10 +60,11 @@ public class GameManager : MonoBehaviour
     
     private void Awake()
     {
+        postProcessVolume.profile.TryGet(out _vignette);
         _localization = GetComponent<Localization>();
-        Cursor.SetCursor(null,Vector2.zero,CursorMode.Auto);
-        Cursor.visible = false;
-        CreateCursorObject();
+        // Cursor.SetCursor(null,Vector2.zero,CursorMode.Auto);
+        // Cursor.visible = false;
+        // CreateCursorObject();
         
         onSwitch.onSwitchToggle.AddListener(OnToggleOnSwitch);
         
@@ -81,7 +86,7 @@ public class GameManager : MonoBehaviour
 
     private void Update()
     {
-        DrawCursor();
+        //DrawCursor();
     }
 
     public List<string> Interpret(string input)
@@ -95,7 +100,7 @@ public class GameManager : MonoBehaviour
         {
             if (_localization.Language == Localization.Languages.English)
             {
-                output.Add("If you need help enter: cat hint.txt");
+                output.Add("If you need help, please enter: cat hint.txt");
                 output.Add("Let's start with something simple, type: capirotada");
             }
             else if (_localization.Language == Localization.Languages.Russian)
@@ -133,19 +138,43 @@ public class GameManager : MonoBehaviour
             }
         }
 
-        if (input == "files list")
+        if (input is "files list" or "files list --all")
         {
+            if (input == "files list --all")
+                output.Add(".top_secret.txt");
+            if (_currentStage == 5)
+            {
+                output.Add("golden_plus.txt");
+            }
             if (_currentStage >= 3)
             {
-                output.Add("daruda_sanstorm.mp3");
                 output.Add("ascii.txt");
-                output.Add("golden_plus.txt");
+                output.Add("buttons.txt");
+                output.Add("daruda_sanstorm.mp3");
+                output.Add("golden_plus.zip");
                 output.Add("hint.txt");
             }
             else
             {
                 output.Add("files are available only for turbo users))");
             }
+        }
+
+        if (input == "cat .top_secret.txt" && _currentStage >= 3)
+        {
+            if (_localization.Language == Localization.Languages.English)
+            {
+                output.Add("Do you remember? This is your first code in QBASIC");
+                output.Add("I was very proud of you)");
+            }
+            else if (_localization.Language == Localization.Languages.Russian)
+            {
+                output.Add("Помнишь? Это твой первый код на QBASIC");
+                output.Add("Я очень гордился тобой)");
+            }
+            output.Add("");
+            output.Add("INPUT \"Enter your name: \", name$");
+            output.Add("PRINT \"Hello, my name is \"; name$; \"! This is my first QBASIC program.\"");
         }
 
         if (input == "cat golden_plus.txt" && _currentStage < 3)
@@ -166,7 +195,12 @@ public class GameManager : MonoBehaviour
             if (input == "capirotada")
             {
                 _currentStage = 2;
+                _soundPlayer.PlayPeepSound();
                 _diodesManager.ToggleXDiodes(_currentStage, isComputerOn);
+
+                DOVirtual.Float(_vignette.intensity.value, _vignette.intensity.value + 0.05f,
+                    1f, x => _vignette.intensity.value = x).SetEase(Ease.Linear);
+                
                 output.Add(@"    ___       ___       ___       ___       ___   ");
                 output.Add(@"   /\  \     /\  \     /\  \     /\  \     /\  \  ");
                 output.Add(@"  /::\  \   /::\  \   /::\  \   /::\  \    \:\  \ ");
@@ -188,7 +222,10 @@ public class GameManager : MonoBehaviour
             if (input == "{)]")
             {
                 _currentStage = 3;
+                _soundPlayer.PlayPeepSound();
                 _diodesManager.ToggleXDiodes(_currentStage, isComputerOn);
+                DOVirtual.Float(_vignette.intensity.value, _vignette.intensity.value + 0.05f,
+                    1f, x => _vignette.intensity.value = x).SetEase(Ease.Linear);
                 output.Add(@"  ___ ___  ___  _   _ ___     ___  ___  __   _____  _   _ ");
                 output.Add(@" | _ \ _ \/ _ \| | | |   \   / _ \| __| \ \ / / _ \| | | |");
                 output.Add(@" |  _/   / (_) | |_| | |) | | (_) | _|   \ V / (_) | |_| |");
@@ -199,18 +236,70 @@ public class GameManager : MonoBehaviour
             else
             {
                 output.Add("Wrong password (OᴥOʋ)");
+                output.Add("If you need help, please enter: cat hint.txt");
                 output.Add("Enter turbo (\u2310\u25a0_\u25a0) user password:");
             }
-            
         }
 
         if (_currentStage >= 3)
         {
+            if (input == "cat buttons.txt")
+            {
+                if (_currentStage == 3)
+                {
+                    _currentStage = 4;
+                    _soundPlayer.PlayPeepSound();
+                    _diodesManager.ToggleXDiodes(_currentStage, isComputerOn);
+                    DOVirtual.Float(_vignette.intensity.value, _vignette.intensity.value + 0.05f,
+                        1f, x => _vignette.intensity.value = x).SetEase(Ease.Linear);
+                    StartCoroutine(Buttons());
+                }
+                
+                if (_localization.Language == Localization.Languages.English)
+                {
+                    output.Add("I ordered the missing buttons from BabaExpress.");
+                    output.Add("If I don't manage to install them, they will be in the box of this computer.");
+                }
+                else if (_localization.Language == Localization.Languages.Russian)
+                {
+                    output.Add("Недостающие кнопки я заказал на BabaExpress.");
+                    output.Add("Если не успею их установить, они будут лежать в коробке от этого компьютера.");
+                }
+
+            }
+        }
+
+        if (_currentStage >= 4)
+        {
+            if (input == "unzip golden_plus.zip")
+            {
+                if (_currentStage == 4)
+                {
+                    _currentStage = 5;
+                    _soundPlayer.PlayPeepSound();
+                    _diodesManager.ToggleXDiodes(_currentStage, isComputerOn);
+                    DOVirtual.Float(_vignette.intensity.value, _vignette.intensity.value + 0.05f,
+                        1f, x => _vignette.intensity.value = x).SetEase(Ease.Linear);
+                }
+                output.Add("Progress: [#####################################] 100 %");
+            }
+        }
+
+        if (_currentStage >= 5)
+        {
             if (input != "cat golden_plus.txt") 
                 return output;
-            
-            _currentStage = 4;
-            StartCoroutine(FinalPaper());
+
+            if (_currentStage == 5)
+            {
+                _currentStage = 6;
+                _soundPlayer.PlayPeepSound();
+                _diodesManager.ToggleXDiodes(_currentStage, isComputerOn);
+                DOVirtual.Float(_vignette.intensity.value, _vignette.intensity.value + 0.05f,
+                    1f, x => _vignette.intensity.value = x).SetEase(Ease.Linear);
+                StartCoroutine(FinalPaper());
+            }
+
             if (_localization.Language == Localization.Languages.English)
             {
                 output.Add("Hi, if you are reading these, it means it's time to say goodbye.");
@@ -330,10 +419,16 @@ public class GameManager : MonoBehaviour
         terminal.SetActive(isOn);
         isComputerOn = isOn;
         
-        if (_currentStage == 4)
+        if (_currentStage == 6)
         {
             FadeOutAndQuit();
         }
+    }
+
+    private IEnumerator Buttons()
+    {
+        yield return new WaitForSeconds(2f);
+        onButtonsFind.Invoke();
     }
 
     public void ReleaseEnter()
@@ -383,12 +478,35 @@ public class GameManager : MonoBehaviour
         if (_currentStage > 1)
         {
             if (_localization.Language == Localization.Languages.English)
+            {
                 output.Add("Password is 3 ASCII symbols, use cat ascii.txt");
+                output.Add("You need bunny for )");
+            }
             else if (_localization.Language == Localization.Languages.Russian)
+            {
                 output.Add("Пароль состоит из 3 символов ASCII, используйте cat ascii.txt");
+                output.Add("Кролик поможет с )");
+            }
         }
 
         if (_currentStage > 2)
+        {
+            if (_localization.Language == Localization.Languages.English)
+                output.Add("buttons.txt now available");
+            else if (_localization.Language == Localization.Languages.Russian)
+                output.Add("buttons.txt теперь доступен");
+        }
+        
+        if (_currentStage > 3)
+        {
+            output.Add("unzip golden_plus.zip");
+            if (_localization.Language == Localization.Languages.English)
+                output.Add("top_secret.txt is hidden file");
+            else if (_localization.Language == Localization.Languages.Russian)
+                output.Add("top_secret.txt скрытый файл");
+        }
+        
+        if (_currentStage > 4)
         {
             if (_localization.Language == Localization.Languages.English)
                 output.Add("golden_plus.txt now available");
@@ -396,7 +514,7 @@ public class GameManager : MonoBehaviour
                 output.Add("golden_plus.txt теперь доступен");
         }
 
-        if (_currentStage > 3)
+        if (_currentStage > 5)
         {
             if (_localization.Language == Localization.Languages.English)
                 output.Add("You can turn off PDA now. Thank you for playing!");
@@ -423,26 +541,26 @@ public class GameManager : MonoBehaviour
         }
     }
     
-    private void CreateCursorObject()
-    {
-        _cursorObject = new GameObject("Cursor")
-        {
-            transform =
-            {
-                localPosition = Vector3.zero
-            }
-        };
-        
-        _cursorObject.transform.SetParent(transform);
-        var sR = _cursorObject.AddComponent<SpriteRenderer>();
-        sR.sprite = cursorSprite;
-        sR.sortingOrder = 102;
-    }
-
-    private void DrawCursor()
-    {
-        Vector2 cursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
-
-        _cursorObject.transform.position = cursorPos;
-    }
+    // private void CreateCursorObject()
+    // {
+    //     _cursorObject = new GameObject("Cursor")
+    //     {
+    //         transform =
+    //         {
+    //             localPosition = Vector3.zero
+    //         }
+    //     };
+    //     
+    //     _cursorObject.transform.SetParent(transform);
+    //     var sR = _cursorObject.AddComponent<SpriteRenderer>();
+    //     sR.sprite = cursorSprite;
+    //     sR.sortingOrder = 102;
+    // }
+    //
+    // private void DrawCursor()
+    // {
+    //     Vector2 cursorPos = Camera.main.ScreenToWorldPoint(Input.mousePosition);
+    //
+    //     _cursorObject.transform.position = cursorPos;
+    // }
 }
